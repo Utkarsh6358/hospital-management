@@ -1,0 +1,33 @@
+# Create .gitignore with common Java exclusions
+@"
+# Compiled files
+/target/
+*.class
+
+# Maven wrapper (optional - we're removing these)
+/mvnw
+/mvnw.cmd
+/.mvn/
+
+# IDE files
+.settings/
+.classpath
+.project
+.vscode/
+.servers/
+bin/
+*.iml
+*.idea
+
+# Logs
+*.log
+*.tmp
+
+# Database files
+*.db
+*.sqlite
+
+# OS files
+.DS_Store
+Thumbs.db
+"@ | Out-File -FilePath ".gitignore" -Encoding UTF8
