@@ -298,7 +298,7 @@ if (error != null) {
 <% } %>
         
         
-        <form action="LoginServelets" method="post" id="loginForm">
+        <form action="LoginServlet" method="post" id="loginForm">
             <div class="form-group">
                 <label><i class="fas fa-envelope"></i> Username</label>
                 <input type="text" name="username" placeholder="Enter your username" required>
