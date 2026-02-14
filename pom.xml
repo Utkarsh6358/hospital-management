@@ -27,7 +27,7 @@
         </configuration>
       </plugin>
 
-      <!-- Maven Dependency Plugin - MERGED version (only ONE declaration) -->
+      <!-- Maven Dependency Plugin - SINGLE declaration with both executions -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -44,8 +44,9 @@
               <outputDirectory>target/lib</outputDirectory>
             </configuration>
           </execution>
-          <!-- Second execution: copy webapp-runner -->
+          <!-- Second execution: copy webapp-runner (for Heroku/Railway) -->
           <execution>
+            <id>copy-webapp-runner</id>
             <phase>package</phase>
             <goals>
               <goal>copy</goal>
@@ -71,37 +72,11 @@
         <version>3.2.3</version>
       </plugin>
 
+      <!-- Exec Maven Plugin -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
-      </plugin>
-    </plugins>
-  </build>
-      
-      <!-- Webapp Runner for Heroku -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.1.2</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>com.heroku</groupId>
-                  <artifactId>webapp-runner</artifactId>
-                  <version>9.0.52.0</version>
-                  <destFileName>webapp-runner.jar</destFileName>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
@@ -136,7 +111,7 @@
       <artifactId>jackson-databind</artifactId>
       <version>2.13.0</version>
     </dependency>
-    
+
     <!-- MySQL Connector -->
     <dependency>
       <groupId>mysql</groupId>
