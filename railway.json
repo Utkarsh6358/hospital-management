@@ -1,6 +1,4 @@
-# Update railway.json
-@"
-{
+﻿{
   "build": {
     "builder": "NIXPACKS",
     "buildCommand": "mvn clean package -DskipTests"
@@ -11,4 +9,3 @@
     "restartPolicyMaxRetries": 10
   }
 }
-"@ | Out-File -FilePath "railway.json" -Encoding UTF8
