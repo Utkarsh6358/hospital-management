@@ -28,6 +28,8 @@ public class DBUtil {
             }
         }
         
+        boolean configured = false;
+        
         // First priority: Use the exact working URL from CLI test
         String workingUrl = "jdbc:mysql://mysql.railway.internal:3306/railway?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
         String workingUser = "root";
@@ -45,47 +47,53 @@ public class DBUtil {
             URL = workingUrl;
             USER = workingUser;
             PASSWORD = workingPassword;
+            configured = true;
             System.out.println("✅ Using hardcoded working connection");
             System.out.println("   URL: " + URL);
-            return;
         } catch (Exception e) {
             System.out.println("❌ Working URL connection test FAILED: " + e.getMessage());
         }
         
-        // Fallback to Railway's native MySQL variables
-        String mysqlHost = System.getenv("MYSQLHOST");
-        String mysqlPort = System.getenv("MYSQLPORT");
-        String mysqlDatabase = System.getenv("MYSQL_DATABASE");
-        String mysqlUser = System.getenv("MYSQLUSER");
-        String mysqlPassword = System.getenv("MYSQLPASSWORD");
-        
-        System.out.println("\nChecking Railway native variables:");
-        System.out.println("  MYSQLHOST: " + (mysqlHost != null ? mysqlHost : "NOT SET"));
-        System.out.println("  MYSQLPORT: " + (mysqlPort != null ? mysqlPort : "NOT SET"));
-        System.out.println("  MYSQL_DATABASE: " + (mysqlDatabase != null ? mysqlDatabase : "NOT SET"));
-        System.out.println("  MYSQLUSER: " + (mysqlUser != null ? mysqlUser : "NOT SET"));
-        System.out.println("  MYSQLPASSWORD: " + (mysqlPassword != null ? "SET" : "NOT SET"));
-        
-        if (mysqlHost != null && mysqlUser != null && mysqlPassword != null && mysqlDatabase != null) {
-            USER = mysqlUser;
-            PASSWORD = mysqlPassword;
-            URL = "jdbc:mysql://" + mysqlHost + ":" + mysqlPort + "/" + mysqlDatabase +
-                  "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true";
-            System.out.println("✅ Using Railway native variables");
-            System.out.println("   Host: " + mysqlHost + ":" + mysqlPort);
-            System.out.println("   Database: " + mysqlDatabase);
+        // If hardcoded URL didn't work, try Railway's native MySQL variables
+        if (!configured) {
+            String mysqlHost = System.getenv("MYSQLHOST");
+            String mysqlPort = System.getenv("MYSQLPORT");
+            String mysqlDatabase = System.getenv("MYSQL_DATABASE");
+            String mysqlUser = System.getenv("MYSQLUSER");
+            String mysqlPassword = System.getenv("MYSQLPASSWORD");
             
-            // Test this connection
-            try {
-                Connection testConn = DriverManager.getConnection(URL, USER, PASSWORD);
-                testConn.close();
-                System.out.println("✅ Railway native connection test PASSED");
-            } catch (Exception e) {
-                System.out.println("❌ Railway native connection test FAILED: " + e.getMessage());
+            System.out.println("\nChecking Railway native variables:");
+            System.out.println("  MYSQLHOST: " + (mysqlHost != null ? mysqlHost : "NOT SET"));
+            System.out.println("  MYSQLPORT: " + (mysqlPort != null ? mysqlPort : "NOT SET"));
+            System.out.println("  MYSQL_DATABASE: " + (mysqlDatabase != null ? mysqlDatabase : "NOT SET"));
+            System.out.println("  MYSQLUSER: " + (mysqlUser != null ? mysqlUser : "NOT SET"));
+            System.out.println("  MYSQLPASSWORD: " + (mysqlPassword != null ? "SET" : "NOT SET"));
+            
+            if (mysqlHost != null && mysqlUser != null && mysqlPassword != null && mysqlDatabase != null) {
+                USER = mysqlUser;
+                PASSWORD = mysqlPassword;
+                URL = "jdbc:mysql://" + mysqlHost + ":" + mysqlPort + "/" + mysqlDatabase +
+                      "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true";
+                System.out.println("✅ Using Railway native variables");
+                System.out.println("   Host: " + mysqlHost + ":" + mysqlPort);
+                System.out.println("   Database: " + mysqlDatabase);
+                configured = true;
+                
+                // Test this connection
+                try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
+                    Connection testConn = DriverManager.getConnection(URL, USER, PASSWORD);
+                    testConn.close();
+                    System.out.println("✅ Railway native connection test PASSED");
+                } catch (Exception e) {
+                    System.out.println("❌ Railway native connection test FAILED: " + e.getMessage());
+                    configured = false;
+                }
             }
         }
-        // Third priority: DATABASE_URL format
-        else if (System.getenv("DATABASE_URL") != null) {
+        
+        // If still not configured, try DATABASE_URL format
+        if (!configured && System.getenv("DATABASE_URL") != null) {
             try {
                 String dbUrl = System.getenv("DATABASE_URL");
                 System.out.println("\nParsing DATABASE_URL: " + dbUrl);
@@ -107,24 +115,29 @@ public class DBUtil {
                       "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true";
                 System.out.println("✅ Using DATABASE_URL");
                 System.out.println("   JDBC URL: " + URL.replace(PASSWORD, "****"));
+                configured = true;
                 
                 // Test this connection
                 try {
+                    Class.forName("com.mysql.cj.jdbc.Driver");
                     Connection testConn = DriverManager.getConnection(URL, USER, PASSWORD);
                     testConn.close();
                     System.out.println("✅ DATABASE_URL connection test PASSED");
                 } catch (Exception e) {
                     System.out.println("❌ DATABASE_URL connection test FAILED: " + e.getMessage());
+                    configured = false;
                 }
             } catch (Exception e) {
                 System.err.println("❌ Error parsing DATABASE_URL: " + e.getMessage());
                 e.printStackTrace();
-                setLocalDefaults();
             }
-        } else {
-            System.out.println("\nNo Railway variables found, using local defaults");
+        }
+        
+        // If all else fails, use local defaults
+        if (!configured) {
             setLocalDefaults();
         }
+        
         System.out.println("=================================\n");
     }
     
