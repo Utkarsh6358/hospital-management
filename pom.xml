@@ -28,22 +28,22 @@
       </plugin>
 
       <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-dependency-plugin</artifactId>
-    <version>3.1.2</version>
-    <executions>
-        <execution>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.2</version>
+        <executions>
+          <execution>
             <id>copy-dependencies</id>
             <phase>package</phase>
             <goals>
-                <goal>copy-dependencies</goal>
+              <goal>copy-dependencies</goal>
             </goals>
             <configuration>
-                <outputDirectory>target/lib</outputDirectory>
+              <outputDirectory>target/lib</outputDirectory>
             </configuration>
-        </execution>
-    </executions>
-</plugin>
+          </execution>
+        </executions>
+      </plugin>
 
       <!-- WAR Plugin -->
       <plugin>
@@ -53,12 +53,12 @@
       </plugin>
 
       <plugin>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>exec-maven-plugin</artifactId>
-    <version>3.1.0</version>
-</plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+      </plugin>
       
-      <!-- Webapp Runner for Heroku (ADD THIS) -->
+      <!-- Webapp Runner for Heroku -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -116,7 +116,7 @@
       <version>2.13.0</version>
     </dependency>
     
-    <!-- MySQL Connector (ADD THIS) -->
+    <!-- MySQL Connector -->
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
@@ -124,27 +124,3 @@
     </dependency>
   </dependencies>
 </project>
-
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-dependency-plugin</artifactId>
-    <version>3.1.2</version>
-    <executions>
-        <execution>
-            <phase>package</phase>
-            <goals>
-                <goal>copy</goal>
-            </goals>
-            <configuration>
-                <artifactItems>
-                    <artifactItem>
-                        <groupId>com.heroku</groupId>
-                        <artifactId>webapp-runner</artifactId>
-                        <version>9.0.52.0</version>
-                        <destFileName>webapp-runner.jar</destFileName>
-                    </artifactItem>
-                </artifactItems>
-            </configuration>
-        </execution>
-    </executions>
-</plugin>
