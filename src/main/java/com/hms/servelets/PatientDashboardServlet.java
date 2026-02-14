@@ -25,22 +25,30 @@ public class PatientDashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
+        System.out.println("\n======================================");
+        System.out.println("PATIENT DASHBOARD ACCESS - " + new java.util.Date());
+        
         HttpSession session = request.getSession(false);
         
-        // Debug logging
-        System.out.println("=== PatientDashboardServlet Access ===");
+        if (session == null) {
+            System.out.println("✗ No session found - redirecting to login");
+            response.sendRedirect("patientLogin.jsp?error=session_expired");
+            return;
+        }
         
-        if (session == null || session.getAttribute("username") == null) {
-            System.out.println("No valid session - redirecting to patientLogin.jsp");
+        System.out.println("✓ Session ID: " + session.getId());
+        
+        String username = (String) session.getAttribute("username");
+        System.out.println("Username from session: '" + username + "'");
+        
+        if (username == null) {
+            System.out.println("✗ No username in session - redirecting to login");
             response.sendRedirect("patientLogin.jsp?error=session_expired");
             return;
         }
 
-        String username = (String) session.getAttribute("username");
-        System.out.println("Username from session: " + username);
-        
         try (Connection conn = DBUtil.getConnection()) {
-            System.out.println("Database connected for PatientDashboard");
+            System.out.println("✓ Database connected");
             
             String sql = "SELECT id, username, name, dob, address, phone FROM patients WHERE username = ?";
             
@@ -63,21 +71,24 @@ public class PatientDashboardServlet extends HttpServlet {
                         request.setAttribute("patient", patient);
                         request.setAttribute("currentDate", new Date());
                         
-                        System.out.println("Patient found: " + patient.getName());
+                        System.out.println("✓ Patient data loaded: " + patient.getName());
+                        System.out.println("→ Forwarding to patientDashboard.jsp");
+                        
                         request.getRequestDispatcher("patientDashboard.jsp").forward(request, response);
                     } else {
-                        System.out.println("Patient not found for username: " + username);
+                        System.out.println("✗ Patient not found in database for username: " + username);
                         session.invalidate();
                         response.sendRedirect("patientLogin.jsp?error=patient_not_found");
                     }
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Database error: " + e.getMessage());
+            System.out.println("✗ DATABASE ERROR: " + e.getMessage());
             e.printStackTrace();
             session.invalidate();
             response.sendRedirect("patientLogin.jsp?error=database_error&message=" + 
                 URLEncoder.encode(e.getMessage(), "UTF-8"));
         }
+        System.out.println("======================================\n");
     }
 }

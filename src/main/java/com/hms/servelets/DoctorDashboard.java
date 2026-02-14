@@ -26,28 +26,30 @@ public class DoctorDashboard extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
+        System.out.println("\n======================================");
+        System.out.println("DOCTOR DASHBOARD ACCESS - " + new java.util.Date());
+        
         HttpSession session = request.getSession(false);
         
-        // Debug logging
-        System.out.println("=== DoctorDashboard Access ===");
-        
         if (session == null) {
-            System.out.println("Session is null - redirecting to index");
+            System.out.println("✗ No session found - redirecting to index");
             response.sendRedirect("index.jsp");
             return;
         }
         
+        System.out.println("✓ Session ID: " + session.getId());
+        
         String doctorEmail = (String) session.getAttribute("email");
-        System.out.println("Doctor email from session: " + doctorEmail);
+        System.out.println("Doctor email from session: '" + doctorEmail + "'");
         
         if (doctorEmail == null) {
-            System.out.println("Doctor email is null - redirecting to index");
+            System.out.println("✗ No email in session - redirecting to index");
             response.sendRedirect("index.jsp");
             return;
         }
 
         try (Connection conn = DBUtil.getConnection()) {
-            System.out.println("Database connected successfully");
+            System.out.println("✓ Database connected");
             
             // Get doctor details
             Map<String, String> doctor = new HashMap<>();
@@ -61,9 +63,9 @@ public class DoctorDashboard extends HttpServlet {
                     doctor.put("specialization", doctorRs.getString("specialization"));
                     doctor.put("contact", doctorRs.getString("contact"));
                     request.setAttribute("doctor", doctor);
-                    System.out.println("Doctor found: " + doctor.get("name"));
+                    System.out.println("✓ Doctor details loaded: " + doctor.get("name"));
                 } else {
-                    System.out.println("No doctor found with email: " + doctorEmail);
+                    System.out.println("✗ Doctor not found for email: " + doctorEmail);
                 }
             }
 
@@ -88,7 +90,7 @@ public class DoctorDashboard extends HttpServlet {
 
                 request.setAttribute("patients", patients);
                 request.setAttribute("totalPatients", patients.size());
-                System.out.println("Loaded " + patients.size() + " patients");
+                System.out.println("✓ Loaded " + patients.size() + " patients");
             }
 
             // Get upcoming appointments count
@@ -98,18 +100,19 @@ public class DoctorDashboard extends HttpServlet {
                 ResultSet appointmentRs = appointmentStmt.executeQuery();
                 if (appointmentRs.next()) {
                     request.setAttribute("upcomingAppointments", appointmentRs.getInt("count"));
-                    System.out.println("Upcoming appointments: " + appointmentRs.getInt("count"));
+                    System.out.println("✓ Upcoming appointments: " + appointmentRs.getInt("count"));
                 }
             }
 
-            System.out.println("Forwarding to doctorDashboard.jsp");
+            System.out.println("→ Forwarding to doctorDashboard.jsp");
             request.getRequestDispatcher("doctorDashboard.jsp").forward(request, response);
             
         } catch (SQLException e) {
-            System.out.println("Database error: " + e.getMessage());
+            System.out.println("✗ DATABASE ERROR: " + e.getMessage());
             e.printStackTrace();
             request.setAttribute("error", "Database error: " + e.getMessage());
             request.getRequestDispatcher("error.jsp").forward(request, response);
         }
+        System.out.println("======================================\n");
     }
 }

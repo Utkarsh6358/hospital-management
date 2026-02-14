@@ -25,11 +25,14 @@ public class LoginServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
-        System.out.println("=== Patient Login Attempt ===");
-        System.out.println("Username: " + username);
+        System.out.println("\n======================================");
+        System.out.println("PATIENT LOGIN ATTEMPT - " + new java.util.Date());
+        System.out.println("Username: '" + username + "'");
+        System.out.println("Password: '" + password + "'");
+        System.out.println("======================================\n");
 
         try (Connection conn = DBUtil.getConnection()) {
-            System.out.println("Database connection successful");
+            System.out.println("✓ Database connection successful");
             
             String sql = "SELECT * FROM patients WHERE username = ? AND password = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -38,19 +41,26 @@ public class LoginServlet extends HttpServlet {
                 ResultSet rs = stmt.executeQuery();
 
                 if (rs.next()) {
+                    System.out.println("✓ Patient found in database:");
+                    System.out.println("  - ID: " + rs.getInt("id"));
+                    System.out.println("  - Name: " + rs.getString("name"));
+                    System.out.println("  - Username: " + rs.getString("username"));
+
                     HttpSession session = request.getSession(true);
                     session.setAttribute("username", username);
                     session.setMaxInactiveInterval(30 * 60); // 30 minutes
                     
-                    System.out.println("Login successful, redirecting to PatientDashboardServlet");
+                    System.out.println("✓ Session created with ID: " + session.getId());
+                    System.out.println("→ Redirecting to PatientDashboardServlet");
+                    
                     response.sendRedirect("PatientDashboardServlet");
                 } else {
-                    System.out.println("Invalid credentials for username: " + username);
+                    System.out.println("✗ No patient found with these credentials");
                     response.sendRedirect("patientLogin.jsp?error=1");
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Database error: " + e.getMessage());
+            System.out.println("✗ DATABASE ERROR: " + e.getMessage());
             e.printStackTrace();
             request.setAttribute("error", "Database error");
             request.getRequestDispatcher("patientLogin.jsp").forward(request, response);
