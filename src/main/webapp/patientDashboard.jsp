@@ -28,7 +28,7 @@
             request.setAttribute("errorMessage", "Error cancelling appointment: " + e.getMessage());
         }
         // Redirect to avoid form resubmission
-        response.sendRedirect("PatientDashboardServelete");
+        response.sendRedirect("PatientDashboardServlet");
         return;
     }
 
@@ -428,7 +428,7 @@
                                                         onclick="viewAppointmentDetails('${appt.id}')">
                                                     <i class="fas fa-eye"></i> View
                                                 </button>
-                                                <a href="PatientDashboardServelete?cancelId=${appt.id}" 
+                                                <a href="PatientDashboardServlet?cancelId=${appt.id}" 
                                                    class="btn btn-sm btn-outline-danger ms-1" 
                                                    onclick="return confirm('Are you sure you want to cancel this appointment?')">
                                                     <i class="fas fa-times"></i> Cancel

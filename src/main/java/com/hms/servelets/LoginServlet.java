@@ -13,16 +13,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.hms.model.User;
 import com.hms.util.DBUtil;
 
-@WebServlet("/LoginServelet")
-public class LoginServelets extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+@WebServlet("/LoginServlet")
+public class LoginServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
+        System.out.println("=== Patient Login Attempt ===");
+        System.out.println("Username: " + username);
+
         try (Connection conn = DBUtil.getConnection()) {
+            System.out.println("Database connection successful");
+            
             String sql = "SELECT * FROM patients WHERE username = ? AND password = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, username);
@@ -30,18 +38,19 @@ public class LoginServelets extends HttpServlet {
                 ResultSet rs = stmt.executeQuery();
 
                 if (rs.next()) {
-                    // Optional: Set session attribute
-                    HttpSession session = request.getSession();
+                    HttpSession session = request.getSession(true);
                     session.setAttribute("username", username);
+                    session.setMaxInactiveInterval(30 * 60); // 30 minutes
                     
-                    // Do NOT use out.println before redirect
-                    response.sendRedirect("patientDashboard.jsp");
+                    System.out.println("Login successful, redirecting to PatientDashboardServlet");
+                    response.sendRedirect("PatientDashboardServlet");
                 } else {
-                    // Redirect to login page with error message
+                    System.out.println("Invalid credentials for username: " + username);
                     response.sendRedirect("patientLogin.jsp?error=1");
                 }
             }
         } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
             e.printStackTrace();
             request.setAttribute("error", "Database error");
             request.getRequestDispatcher("patientLogin.jsp").forward(request, response);

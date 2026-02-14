@@ -13,36 +13,19 @@ import javax.servlet.http.*;
 @WebServlet("/DoctorLoginServlet")
 public class DoctorLoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    
-    // Add this static block to force DBUtil initialization
-    static {
-        System.out.println("=== DoctorLoginServlet Static Block ===");
-        System.out.println("Forcing DBUtil to load...");
-        try {
-            Class.forName("com.hms.util.DBUtil");
-            System.out.println("DBUtil class loaded successfully");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Failed to load DBUtil: " + e.getMessage());
-        }
-    }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Print environment variables directly to verify
-        System.out.println("=== Environment Variables ===");
-        System.out.println("MYSQLHOST: " + System.getenv("MYSQLHOST"));
-        System.out.println("MYSQLPORT: " + System.getenv("MYSQLPORT"));
-        System.out.println("MYSQL_DATABASE: " + System.getenv("MYSQL_DATABASE"));
-        System.out.println("MYSQLUSER: " + System.getenv("MYSQLUSER"));
-        System.out.println("MYSQLPASSWORD: " + (System.getenv("MYSQLPASSWORD") != null ? "SET" : "NOT SET"));
-        System.out.println("=============================");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
         
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
+        System.out.println("=== Doctor Login Attempt ===");
+        System.out.println("Email: " + email);
 
         try (Connection con = DBUtil.getConnection()) {
+            System.out.println("Database connection successful");
+            
             String query = "SELECT * FROM doctors WHERE email=? AND password=?";
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, email);
@@ -51,16 +34,20 @@ public class DoctorLoginServlet extends HttpServlet {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                // Get doctor name from "doctor" column
                 String doctorName = rs.getString("doctor");
+                System.out.println("Doctor found: " + doctorName);
 
-                HttpSession session = request.getSession();
+                HttpSession session = request.getSession(true);
                 session.setAttribute("email", email);
                 session.setAttribute("doctor", doctorName);
-// Store doctor's name in session
-
+                session.setMaxInactiveInterval(30 * 60); // 30 minutes timeout
+                
+                System.out.println("Session created, redirecting to DoctorDashboard");
                 response.sendRedirect("DoctorDashboard");
             } else {
+                System.out.println("No doctor found with these credentials");
+                response.setContentType("text/html");
+                PrintWriter out = response.getWriter();
                 out.println("<script type=\"text/javascript\">");
                 out.println("alert('Invalid email or password!');");
                 out.println("location='doctorLogin.jsp';");
@@ -68,12 +55,16 @@ public class DoctorLoginServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
+            System.out.println("ERROR in DoctorLoginServlet: " + e.getMessage());
             e.printStackTrace();
+            response.setContentType("text/html");
+            PrintWriter out = response.getWriter();
             out.println("<h3>Something went wrong: " + e.getMessage() + "</h3>");
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
         response.sendRedirect("doctorLogin.jsp");
     }
 }

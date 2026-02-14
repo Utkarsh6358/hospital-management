@@ -18,8 +18,8 @@ import javax.servlet.http.HttpSession;
 import com.hms.model.Patient;
 import com.hms.util.DBUtil;
 
-@WebServlet("/PatientDashboardServelete")
-public class PatientDashboardServelete extends HttpServlet {
+@WebServlet("/PatientDashboardServlet")
+public class PatientDashboardServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
@@ -27,16 +27,21 @@ public class PatientDashboardServelete extends HttpServlet {
         
         HttpSession session = request.getSession(false);
         
-        // 1. Enhanced session validation
+        // Debug logging
+        System.out.println("=== PatientDashboardServlet Access ===");
+        
         if (session == null || session.getAttribute("username") == null) {
+            System.out.println("No valid session - redirecting to patientLogin.jsp");
             response.sendRedirect("patientLogin.jsp?error=session_expired");
             return;
         }
 
         String username = (String) session.getAttribute("username");
+        System.out.println("Username from session: " + username);
         
         try (Connection conn = DBUtil.getConnection()) {
-            // 2. Corrected SQL query to match your database schema
+            System.out.println("Database connected for PatientDashboard");
+            
             String sql = "SELECT id, username, name, dob, address, phone FROM patients WHERE username = ?";
             
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -44,36 +49,33 @@ public class PatientDashboardServelete extends HttpServlet {
                 
                 try (ResultSet rs = stmt.executeQuery()) {
                     if (rs.next()) {
-                        // 3. Properly construct Patient object with all fields
                         Patient patient = new Patient();
                         patient.setId(rs.getInt("id"));
                         patient.setUsername(rs.getString("username"));
                         patient.setName(rs.getString("name"));
                         
-                        // 4. Handle possible null values for date
                         java.sql.Date dob = rs.getDate("dob");
                         patient.setDob(dob != null ? new Date(dob.getTime()) : null);
                         
                         patient.setAddress(rs.getString("address"));
                         patient.setPhone(rs.getString("phone"));
                         
-                        // 5. Set attributes before forwarding
                         request.setAttribute("patient", patient);
-                        
-                        // 6. Add any additional required attributes
                         request.setAttribute("currentDate", new Date());
                         
+                        System.out.println("Patient found: " + patient.getName());
                         request.getRequestDispatcher("patientDashboard.jsp").forward(request, response);
                     } else {
+                        System.out.println("Patient not found for username: " + username);
                         session.invalidate();
                         response.sendRedirect("patientLogin.jsp?error=patient_not_found");
                     }
                 }
             }
         } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
             e.printStackTrace();
             session.invalidate();
-            // 7. More specific error handling
             response.sendRedirect("patientLogin.jsp?error=database_error&message=" + 
                 URLEncoder.encode(e.getMessage(), "UTF-8"));
         }
