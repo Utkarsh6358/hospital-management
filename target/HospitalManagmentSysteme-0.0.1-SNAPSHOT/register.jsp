@@ -226,4 +226,40 @@
     // Password Strength Calculator
     const calculatePasswordStrength = (password) => {
         let strength = 0;
-        if (password.length
+        if (password.length >= 6) strength += 1;
+        if (password.match(/[a-z]/)) strength += 1;
+        if (password.match(/[A-Z]/)) strength += 1;
+        if (password.match(/[0-9]/)) strength += 1;
+        if (password.match(/[^a-zA-Z0-9]/)) strength += 1;
+        return strength;
+    };
+
+    // Set max date for DOB (must be at least 18 years ago)
+    const today = new Date();
+    const minAge = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+    document.getElementById('dob').max = minAge.toISOString().split('T')[0];
+
+    // Password strength meter
+    document.getElementById('password').addEventListener('input', function() {
+        const strength = calculatePasswordStrength(this.value);
+        const strengthBar = document.getElementById('strengthBar');
+        const colors = ['#dc3545', '#ffc107', '#ffc107', '#28a745', '#28a745'];
+        const widths = ['20%', '40%', '60%', '80%', '100%'];
+        
+        if (this.value.length === 0) {
+            strengthBar.style.width = '0';
+        } else {
+            strengthBar.style.width = widths[strength - 1] || '20%';
+            strengthBar.style.backgroundColor = colors[strength - 1] || colors[0];
+        }
+    });
+
+    // Form validation
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        const password = document.getElementById('password').value;
+        if (password.length < 6) {
+            e.preventDefault();
+            alert('Password must be at least 6 characters long');
+        }
+    });
+</script>

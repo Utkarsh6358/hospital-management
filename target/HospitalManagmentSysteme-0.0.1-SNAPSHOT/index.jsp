@@ -190,9 +190,9 @@
         <div class="footer">
             <p class="mb-0">© 2025 Sanjeevani Hospital. All Rights Reserved.</p>
             <div class="mt-2">
-                <a href="#" class="text-decoration-none me-3"><i class="fas fa-phone me-1"></i> Emergency:Call Shreya!!</a>
-                <a href="#" class="text-decoration-none me-3"><i class="fas fa-envelope me-1"></i> help@shreya.com</a>
-                <a href="#" class="text-decoration-none"><i class="fas fa-map-marker-alt me-1"></i>Atria Girls Hostel</a>
+                <a href="#" class="text-decoration-none me-3"><i class="fas fa-phone me-1"></i> Emergency:Call 110!!</a>
+                <a href="#" class="text-decoration-none me-3"><i class="fas fa-envelope me-1"></i> help@.com</a>
+                <a href="#" class="text-decoration-none"><i class="fas fa-map-marker-alt me-1"></i>city A</a>
             </div>
         </div>
     </div>
