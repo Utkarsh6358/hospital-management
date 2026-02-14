@@ -28,7 +28,31 @@ public class DBUtil {
             }
         }
         
-        // First priority: Railway's native MySQL variables
+        // First priority: Use the exact working URL from CLI test
+        String workingUrl = "jdbc:mysql://mysql.railway.internal:3306/railway?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+        String workingUser = "root";
+        String workingPassword = "scgeUIYMBqMkXovMzfoVGxtapbWFfAMw";
+        
+        // Test this connection immediately
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("Testing connection with working URL...");
+            Connection testConn = DriverManager.getConnection(workingUrl, workingUser, workingPassword);
+            testConn.close();
+            System.out.println("✅ Working URL connection test PASSED");
+            
+            // Use the working connection
+            URL = workingUrl;
+            USER = workingUser;
+            PASSWORD = workingPassword;
+            System.out.println("✅ Using hardcoded working connection");
+            System.out.println("   URL: " + URL);
+            return;
+        } catch (Exception e) {
+            System.out.println("❌ Working URL connection test FAILED: " + e.getMessage());
+        }
+        
+        // Fallback to Railway's native MySQL variables
         String mysqlHost = System.getenv("MYSQLHOST");
         String mysqlPort = System.getenv("MYSQLPORT");
         String mysqlDatabase = System.getenv("MYSQL_DATABASE");
@@ -50,8 +74,17 @@ public class DBUtil {
             System.out.println("✅ Using Railway native variables");
             System.out.println("   Host: " + mysqlHost + ":" + mysqlPort);
             System.out.println("   Database: " + mysqlDatabase);
+            
+            // Test this connection
+            try {
+                Connection testConn = DriverManager.getConnection(URL, USER, PASSWORD);
+                testConn.close();
+                System.out.println("✅ Railway native connection test PASSED");
+            } catch (Exception e) {
+                System.out.println("❌ Railway native connection test FAILED: " + e.getMessage());
+            }
         }
-        // Second priority: DATABASE_URL format
+        // Third priority: DATABASE_URL format
         else if (System.getenv("DATABASE_URL") != null) {
             try {
                 String dbUrl = System.getenv("DATABASE_URL");
@@ -74,6 +107,15 @@ public class DBUtil {
                       "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true";
                 System.out.println("✅ Using DATABASE_URL");
                 System.out.println("   JDBC URL: " + URL.replace(PASSWORD, "****"));
+                
+                // Test this connection
+                try {
+                    Connection testConn = DriverManager.getConnection(URL, USER, PASSWORD);
+                    testConn.close();
+                    System.out.println("✅ DATABASE_URL connection test PASSED");
+                } catch (Exception e) {
+                    System.out.println("❌ DATABASE_URL connection test FAILED: " + e.getMessage());
+                }
             } catch (Exception e) {
                 System.err.println("❌ Error parsing DATABASE_URL: " + e.getMessage());
                 e.printStackTrace();
