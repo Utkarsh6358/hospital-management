@@ -1,0 +1,1 @@
+web: java $JAVA_OPTS -jar target/HospitalManagmentSysteme-0.0.1-SNAPSHOT.war

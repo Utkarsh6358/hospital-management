@@ -1,0 +1,42 @@
+[
+  {
+    "username": "john_patient",
+    "name": "John Doe",
+    "dob": "1985-03-15",
+    "address": "123 Main St, Cityville",
+    "phone": "555-0101",
+    "labResults": [
+      {
+        "testId": "BLD2023-001",
+        "testName": "Complete Blood Count",
+        "date": "2023-08-01",
+        "result": "Hemoglobin: 14.2 g/dL\nWBC: 6.5 x10^3/μL",
+        "doctorComments": "Within normal range"
+      },
+      {
+        "testId": "LIP2023-002",
+        "testName": "Lipid Panel",
+        "date": "2023-08-05",
+        "result": "Total Cholesterol: 190 mg/dL\nLDL: 110 mg/dL",
+        "doctorComments": "Suggest dietary modifications"
+      }
+    ]
+  },
+  {
+    "username": "milad_patient",
+    "name": "Milad Better",
+    "dob": "1965-11-12",
+    "address": "456 Oak Rd, Townsville",
+    "phone": "999999999",
+    "labResults": [
+      {
+        "testId": "URI2023-003",
+        "testName": "Urinalysis",
+        "date": "2023-08-10",
+        "result": "Protein: Negative\nGlucose: Negative",
+        "doctorComments": "Normal results"
+      }
+    ]
+  }
+
+]

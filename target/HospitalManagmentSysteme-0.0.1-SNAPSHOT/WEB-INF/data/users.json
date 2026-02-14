@@ -1,0 +1,22 @@
+[
+  {
+    "username": "john_patient",
+    "password": "patient123",
+    "role": "patient"
+  },
+  {
+    "username": "sarah_doctor",
+    "password": "doctor123",
+    "role": "doctor"
+  },
+  {
+    "username": "milad_patient",
+    "password": "milad2023",
+    "role": "patient"
+  },
+  {
+    "username": "Rami_doctor",
+    "password": "Rami@med",
+    "role": "doctor"
+  }
+]

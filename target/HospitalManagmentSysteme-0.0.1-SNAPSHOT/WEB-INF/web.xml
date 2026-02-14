@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
+  <display-name>HospitalManagmentSysteme</display-name>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <servlet-name>DoctorDashboardServlet</servlet-name>
+    <servlet-class>com.yourpackage.DoctorDashboardServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>DoctorDashboardServlet</servlet-name>
+    <url-pattern>/DoctorDashboardServlet</url-pattern>
+</servlet-mapping>
+<servlet>
+    <servlet-name>LoginServelets</servlet-name>
+    <servlet-class>com.hms.servelets.LoginServelets</servlet-class>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>LoginServelets</servlet-name>
+    <url-pattern>/LoginServelets</url-pattern>
+</servlet-mapping>
+
+</web-app>
