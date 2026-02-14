@@ -13,8 +13,29 @@ import javax.servlet.http.*;
 @WebServlet("/DoctorLoginServlet")
 public class DoctorLoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    
+    // Add this static block to force DBUtil initialization
+    static {
+        System.out.println("=== DoctorLoginServlet Static Block ===");
+        System.out.println("Forcing DBUtil to load...");
+        try {
+            Class.forName("com.hms.util.DBUtil");
+            System.out.println("DBUtil class loaded successfully");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Failed to load DBUtil: " + e.getMessage());
+        }
+    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Print environment variables directly to verify
+        System.out.println("=== Environment Variables ===");
+        System.out.println("MYSQLHOST: " + System.getenv("MYSQLHOST"));
+        System.out.println("MYSQLPORT: " + System.getenv("MYSQLPORT"));
+        System.out.println("MYSQL_DATABASE: " + System.getenv("MYSQL_DATABASE"));
+        System.out.println("MYSQLUSER: " + System.getenv("MYSQLUSER"));
+        System.out.println("MYSQLPASSWORD: " + (System.getenv("MYSQLPASSWORD") != null ? "SET" : "NOT SET"));
+        System.out.println("=============================");
+        
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
