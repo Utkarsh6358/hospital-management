@@ -322,28 +322,6 @@ Screenshots of the application are available in the [`ScreenShoots`](./ScreenSho
 
 ---
 
-## 🔮 Future Improvements
-
-Potential improvements include:
-
-* [ ] Spring Boot migration
-* [ ] REST API layer
-* [ ] JWT-based authentication
-* [ ] Password hashing and stronger authentication
-* [ ] Role-based authorization
-* [ ] Admin dashboard
-* [ ] Online billing and payments
-* [ ] Prescription management
-* [ ] Email/SMS appointment notifications
-* [ ] Doctor availability scheduling
-* [ ] Advanced search and filtering
-* [ ] Automated testing
-* [ ] Docker support
-* [ ] CI/CD pipeline
-* [ ] Improved responsive UI
-* [ ] Production-grade database security
-
----
 
 ## 🎯 Learning Outcomes
 
