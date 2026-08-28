@@ -6,15 +6,11 @@ import com.hms.model.User;
 import java.sql.*;
 
 public class UserDAO {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/your_db_name";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "your_password";
 
     public static User validateUser(String username, String password) {
         User user = null;
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            Connection conn = com.hms.util.DBUtil.getConnection();
 
             String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
