@@ -2,10 +2,11 @@
 
 > A full-stack hospital management web application built with Java, JSP, Servlets, Maven, and MySQL to simplify patient care, appointment management, doctor workflows, and medical record handling.
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://hospital-management-ri2u.onrender.com)
+[![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
 
-
-
-\
+🔗 **Live Deployment:** [https://hospital-management-ri2u.onrender.com](https://hospital-management-ri2u.onrender.com)
 
 ---
 
@@ -142,7 +143,7 @@ hospital-management/
 | JSON Processing       | Jackson                           |
 | Build Tool            | Maven                             |
 | Application Packaging | WAR                               |
-| Deployment            | Railway                           |
+| Deployment            | Render / Docker / Railway         |
 | Server Runtime        | Servlet container / WebApp Runner |
 
 ---
@@ -273,7 +274,12 @@ Alternatively, the project includes deployment configuration for Railway.
 
 ## ☁️ Deployment
 
-The repository includes Railway deployment configuration.
+### 🌐 Live Production URL
+The application is live and accessible at:
+👉 **[https://hospital-management-ri2u.onrender.com](https://hospital-management-ri2u.onrender.com)**
+
+### Cloud Deployment (Render / Docker / Railway)
+The project can be deployed using Docker or servlet runners:
 
 The deployment pipeline builds the project using:
 
@@ -281,9 +287,9 @@ The deployment pipeline builds the project using:
 mvn clean package -DskipTests
 ```
 
-and starts the generated WAR through WebApp Runner.
+and runs the generated WAR or container image.
 
-For a production deployment, configure database credentials using environment variables rather than committing them to the repository.
+For production deployment, configure database credentials using environment variables (`DB_URL`, `DB_USER`, `DB_PASSWORD` or Railway / Render MySQL add-ons) rather than hardcoding them.
 
 ---
 
