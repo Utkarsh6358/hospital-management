@@ -308,19 +308,7 @@ Before using it in a real healthcare environment, additional security controls s
 
 ---
 
-## 📸 Screenshots
 
-Screenshots of the application are available in the [`ScreenShoots`](./ScreenShoots) directory.
-
-### Patient Dashboard
-
-### Doctor Dashboard
-
-### Appointment Booking
-
-> Replace the image filenames above with the exact filenames available in the `ScreenShoots` directory.
-
----
 
 
 ## 🎯 Learning Outcomes
